@@ -5,19 +5,20 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.AspNetCore.Session;
 using Services;
+using Services.Interfaces;
 
 
 namespace CSharpCollective.Controllers
 {
     public class LoginController : Controller
     {       
-        private LoginService _loginService;
+        private ILoginService loginService;
       
 
 
-        public LoginController(IMapper mapper)
-        {                  
-            _loginService = new LoginService(mapper);
+        public LoginController(ILoginService loginService)
+        {
+            this.loginService = loginService;
 
         }
         
@@ -32,7 +33,7 @@ namespace CSharpCollective.Controllers
         [OutputCache(Duration = 10)]
         public IActionResult Login(UserDto user)
         {
-            user = _loginService.userExists(user);
+            user = loginService.userExists(user);
             if (user==null || user.Password == "Wrong Password")
             {   ViewBag.ShowSidebar = false;
                 TempData["LoginError"] = "Wrong password or Username";

@@ -4,21 +4,21 @@ using DataBase.DataContext;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
 using Services;
+using Services.Interfaces;
 
 namespace CSharpCollective.Controllers
 {
     public class RegisterController : Controller
     {
 
-        private RegisterService registerService;
         
+        private IRegisterService registerService;
 
-        public RegisterController(IMapper mapper)
+        public RegisterController(IRegisterService registerService)
         {
 
 
-            registerService = new RegisterService(mapper);
-
+            this.registerService = registerService;
         }
 
 

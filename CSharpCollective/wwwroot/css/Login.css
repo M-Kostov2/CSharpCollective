@@ -1,52 +1,104 @@
-﻿body {
+:root {
+    --brand: #DA0037;
+    --brand-fill: #b8002e;
+    --surface: #3a3f47;
+    --input-bg: #2b2f35;
+    --text: #EDEDED;
+    --text-muted: #a7b0b9;
+    --border: rgba(255, 255, 255, 0.14);
+    --sans: 'Segoe UI', Roboto, Arial, sans-serif;
+    --radius-sm: 0.5rem;
+    --radius-pill: 999px;
 }
 
 #main {
     display: flex;
     flex-direction: row;
-    justify-items: center;
     justify-content: center;
     align-items: center;
     height: 65vh;
 }
+
 #main-sidebar {
     display: none !important;
 }
 
 #login-input {
     display: flex;
-    flex-direction: row;
-    justify-items: center;
     justify-content: center;
     align-items: center;
     margin: 0;
-    gap: 0,5rem;
-    list-style: none;
-    color: #000000;
-    border: 0.5px solid #EDEDED;
-    border-radius: 0.25rem;
-    background-color: white;
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 1rem;
+    background-color: var(--surface);
     width: fit-content;
-    padding: 10px;
-    position: center;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    font-size: 1.2em;
-    font-weight: bold;
+    min-width: 340px;
+    padding: 2.5rem 2.5rem 2rem;
+    font-family: var(--sans);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+
+#login-input form {
+    width: 100%;
+    gap: 0.85rem;
+}
+
+#login-input h1 {
+    font-size: 1.8rem;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    text-align: center;
+    margin-bottom: 0.5rem;
+}
+
+#login-input p {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    margin-bottom: -0.5rem;
+}
+
+#login-input input {
+    padding: 0.65rem 1rem;
+    background-color: var(--input-bg);
+    color: var(--text);
+    border: 2px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-size: 16px;
+    font-family: var(--sans);
+    outline: none;
+    transition: border-color 0.15s ease;
+}
+
+#login-input input:focus {
+    border-color: var(--brand);
 }
 
 button {
     width: 100%;
-    background-color: white;
-    color: black;
-    border-radius: 0.25rem;
-    font-weight: bold;
+    background-color: transparent;
+    color: var(--brand);
+    border: 2px solid var(--brand);
+    border-radius: var(--radius-pill);
+    padding: 0.7rem 1rem;
+    font-weight: 700;
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    margin-top: 0.5rem;
+    transition: background-color 0.15s ease, color 0.15s ease, transform 0.1s ease;
 }
 
-
-button:hover{
+button:hover {
     width: 100%;
-    background-color: #DA0037;
+    background-color: var(--brand-fill);
+    border-color: var(--brand-fill);
     color: white;
-    border-radius: 0.25rem;
+    border-radius: var(--radius-pill);
 }
 
+button:active {
+    transform: scale(0.98);
+}

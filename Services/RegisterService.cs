@@ -1,10 +1,10 @@
-﻿
+
 using AutoMapper;
 using CSharpCollective.Services.DtoModels;
 using DataBase.DataBaseProvider;
 using DataBase.DataContext;
 using DataBase.Models;
-
+using Microsoft.AspNet.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
@@ -16,20 +16,22 @@ using System.Text;
 
 namespace Services
 {
-    public class RegisterService : IUserValidation
+    public class RegisterService : IUserValidation, IRegisterService
     {
 
-        private CollectiveContext _context;
-        private readonly IMapper _mapper;
-        private LoginService loginservice;
+        private CollectiveContext context;
+        private readonly IMapper mapper;
+        private ILoginService loginservice;
+      
 
 
 
-        public RegisterService(IMapper mapper)
+        public RegisterService(IMapper mapper,CollectiveContext context, ILoginService loginservice)
         {
-            _context = new CollectiveContext();
-            _mapper = mapper;
-            loginservice = new LoginService(mapper);
+           this.context = context;
+           this.mapper = mapper;
+           this.loginservice = loginservice;
+       
 
         }
 
@@ -43,7 +45,7 @@ namespace Services
                 return null;
             }
 
-
+            Datarecieved.Password = ManualPasswordHasher.Hash(Datarecieved.Password);
 
             User userRegistered = new User(Datarecieved.Email, Datarecieved.Password, Datarecieved.UserName);
             ;
@@ -57,11 +59,11 @@ namespace Services
                 return null;
             }
 
-            _context.Users.AddAsync(userRegistered);
-            _context.SaveChangesAsync();
+            context.Users.AddAsync(userRegistered);
+            context.SaveChangesAsync();
 
 
-            _mapper.Map(userRegistered, userDtoInfo);
+            mapper.Map(userRegistered, userDtoInfo);
 
             return userDtoInfo;
 

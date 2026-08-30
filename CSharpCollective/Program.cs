@@ -1,13 +1,9 @@
 
 
 using DataBase.DataContext;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Services;
-using Services.ConfigMap;
-using AutoMapper;
-using DataBase.ModelConstrains;
 using CSharpCollective.Services;
+using Services.Interfaces;
 
 
 namespace CSharpCollective
@@ -26,9 +22,9 @@ namespace CSharpCollective
 
 
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-
-            builder.Services.AddTransient<LoginService>();
-            builder.Services.AddTransient<RegisterService>();
+         
+            builder.Services.AddScoped<ILoginService, LoginService>();
+            builder.Services.AddScoped<IRegisterService,RegisterService>();
             builder.Services.AddTransient<CommentService>();
             builder.Services.AddTransient<PostService>();
             builder.Services.AddTransient<LogCheck>();
@@ -60,14 +56,14 @@ namespace CSharpCollective
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-            
+
             app.UseHttpsRedirection();
             app.UseRouting();
 
             app.UseAuthorization();
 
             app.MapStaticAssets();
-      
+
 
             app.MapControllerRoute(
                 name: "default",
