@@ -53,7 +53,7 @@ namespace CSharpCollective.Controllers
             var commentCheck = commentService.CommentCheck(comment);
             if (commentCheck == null)
             {
-                TempData["ErrorMessage"] = "Content exceeds maximum length of 2000 or is empty. Please try again.";
+                TempData["ErrorMessage"] = "Content is either empty or exceeds maximum length of 2000 or is empty. Please try again.";
                 return RedirectToAction("Create");
             }
             commentService.Create(comment);

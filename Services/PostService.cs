@@ -208,7 +208,7 @@ namespace Services
             string content = Datarecieved.Content;
             
 
-            if (title.IsNullOrEmpty() & content.IsNullOrEmpty()|| title.Length > 100 & content.Length > 2000 & title.Length <= 0)
+            if (title.IsNullOrEmpty() || content.IsNullOrEmpty()|| title.Length > 100 & content.Length > 2000 & title.Length <= 0)
             {
                 return null;
             }

@@ -4,7 +4,7 @@
     var userId = HttpContextAccessor.HttpContext.Session.GetString("UserId");
     var role = HttpContextAccessor.HttpContext.Session.GetString("UserRole");
 }
-@model CSharpCollective.Controllers.PostController;
+@model CSharpCollective.Services.DtoModels.PostDto;
 
 <link rel="stylesheet" href="~/css/Post.css" asp-append-version="true" />
 <div class="main">
