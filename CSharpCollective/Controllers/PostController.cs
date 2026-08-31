@@ -104,7 +104,7 @@ namespace CSharpCollective.Controllers
         public IActionResult AddCategory(PostDto post, string Category)
         {
             var postCheck = postService.PostCheck(post);
-            var categoryCheck = postService.PostCategoryCheck(post);
+            var categoryCheck = postService.PostCategoryCheck(post, Category);
 
             if (postCheck == null)
             {

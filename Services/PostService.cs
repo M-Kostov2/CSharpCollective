@@ -93,12 +93,12 @@ namespace Services
             return postDtos;
         }
 
-        public IEnumerable<PostDto> GetAllByCategory(string tag)
+        public IEnumerable<PostDto> GetAllByCategory(string category)
         {
             var posts = context.Posts
-            .Include(p => p.Tags)
-            .Where(p => p.Tags.Any(t => t.Name.ToLower() == tag.ToLower())).
-            Select(n => new Post
+            .Include(p => p.Category)
+            .Where(p => p.Category.Name.ToLower() == category.ToLower())
+            .Select(n => new Post
             {
                 Id = n.Id,
                 Title = n.Title,
@@ -218,9 +218,12 @@ namespace Services
         }
 
 
-        public PostDto PostCategoryCheck(PostDto Datarecieved)
+        public PostDto PostCategoryCheck(PostDto Datarecieved, string Category)
         {
-            var category = context.Posts.Where(p => p.Id == Datarecieved.Id).Select(p => new { p.Category.Name }).ToString();
+            var category = context.Posts.Where(p => p.Id == Datarecieved.Id).Include(p => p.Category)
+                .Where(p => p.Category.Name.ToLower() == Category.ToLower())
+                .Select(p=> p.Category.Id)
+                .ToString();
 
         
 

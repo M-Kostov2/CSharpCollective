@@ -1,4 +1,5 @@
 ﻿using CSharpCollective.Services.DtoModels;
+using DataBase.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +21,7 @@ namespace Services.Interfaces
         public void AddTagsToPost(Guid Id, string Tag);
         public PostDto PostCheck(PostDto Datarecieved);
 
-        public PostDto PostCategoryCheck(PostDto Datarecieved);
+        public PostDto PostCategoryCheck(PostDto Datarecieved,string Category);
 
     }
 }
