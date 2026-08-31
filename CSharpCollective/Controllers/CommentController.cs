@@ -3,21 +3,22 @@ using CSharpCollective.Services.DtoModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
 using Services;
+using Services.Interfaces;
 
 namespace CSharpCollective.Controllers
 {
     public class CommentController : Controller
     {
 
-        private CommentService _commentService;
+        private ICommentService commentService;
 
 
 
-        public CommentController(IMapper mapper)
+        public CommentController(ICommentService commentService)
         {
 
 
-            _commentService = new CommentService(mapper);
+            this.commentService = commentService;
 
 
         }
@@ -26,7 +27,7 @@ namespace CSharpCollective.Controllers
         [HttpGet]
         public IActionResult Comment()
         {
-            var comments = _commentService.GetAll();
+            var comments = commentService.GetAll();
 
             if (comments.Count().Equals(0))
             {return RedirectToAction("Create"); }
@@ -49,13 +50,13 @@ namespace CSharpCollective.Controllers
             ;
             comment.AuthorId = Guid.Parse(userIdString);
 
-            var commentCheck = _commentService.CommentCheck(comment);
+            var commentCheck = commentService.CommentCheck(comment);
             if (commentCheck == null)
             {
                 TempData["ErrorMessage"] = "Content exceeds maximum length of 2000 or is empty. Please try again.";
                 return RedirectToAction("Create");
             }
-            _commentService.Create(comment);
+            commentService.Create(comment);
 
             return RedirectToAction("Comment");
         }
@@ -63,7 +64,7 @@ namespace CSharpCollective.Controllers
 
         public IActionResult Delete(Guid id)
         {
-            _commentService.Delete(id);
+           commentService.Delete(id);
 
 
             return RedirectToAction("Comment"); // Back to list

@@ -41,6 +41,8 @@
                         <section class="buttons">
                             <a asp-controller="Post" asp-action="Edit" asp-route-id="@post.Id.ToString()" class="btn btn-danger btn-sm">Edit</a>
 
+                            <a asp-controller="Post" asp-action="AddTags" asp-route-id="@post.Id.ToString()" class="btn btn-danger btn-sm">Add Tags</a>
+
                             <a asp-controller="Post" asp-action="AddCategory" asp-route-id="@post.Id.ToString()" class="btn btn-danger btn-sm">Add category</a>
 
                             <a asp-controller="Post" asp-action="Delete" asp-route-id="@post.Id" class="btn btn-danger btn-sm">Delete</a>

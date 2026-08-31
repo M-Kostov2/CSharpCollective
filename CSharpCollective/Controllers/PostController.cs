@@ -7,26 +7,27 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.EntityFrameworkCore;
 using Services;
+using Services.Interfaces;
 using System;
 
 namespace CSharpCollective.Controllers
 {
     public class PostController : Controller
     {
-        private PostService _postService;
+        private IPostService postService;
 
 
 
-        public PostController(IMapper mapper)
+        public PostController(IPostService postservice)
         {
-            _postService = new PostService(mapper);
+            this.postService = postservice;
         }
 
 
         [HttpGet]
         public IActionResult Post()
         {
-            var posts = _postService.GetAll();
+            var posts = postService.GetAll();
 
             if (posts.Count().Equals(0))
                 return RedirectToAction("Create");
@@ -46,13 +47,13 @@ namespace CSharpCollective.Controllers
             string userIdString = HttpContext.Session.GetString("UserId");
             post.AuthorId = Guid.Parse(userIdString);
 
-            var postCheck = _postService.PostCheck(post);
+            var postCheck = postService.PostCheck(post);
             if (postCheck == null)
             {
                 TempData["ErrorMessage"] = "Title or content exceeds maximum length of 100 and 2000 or one of them is empty. Please try again.";
                 return RedirectToAction("Create");
             }
-            _postService.Create(post);
+            postService.Create(post);
 
             return RedirectToAction("Post");
         }
@@ -63,7 +64,7 @@ namespace CSharpCollective.Controllers
         public IActionResult Edit(Guid id)
         {
 
-            PostDto post = _postService.GetById(id);
+            PostDto post = postService.GetById(id);
             if (post == null)
             {
                 return NotFound();
@@ -77,13 +78,13 @@ namespace CSharpCollective.Controllers
 
 
 
-            var postCheck = _postService.PostCheck(post);
+            var postCheck = postService.PostCheck(post);
             if (postCheck == null)
             {
                 TempData["EditError"] = "Title or content exceeds maximum length of 100 and 2000 or one of them is empty. Please try again.";
                 return RedirectToAction("Edit");
             }
-            _postService.Edit(post);
+            postService.Edit(post);
             return RedirectToAction("Post");
         }
 
@@ -92,7 +93,7 @@ namespace CSharpCollective.Controllers
         [HttpGet]
         public IActionResult AddCategory(Guid id)
         {
-            var post = _postService.GetById(id); 
+            var post = postService.GetById(id); 
             if (post == null) return NotFound();
 
             return View(post);
@@ -102,7 +103,41 @@ namespace CSharpCollective.Controllers
         [HttpPost]
         public IActionResult AddCategory(PostDto post, string Category)
         {
-            var postCheck = _postService.PostCheck(post);
+            var postCheck = postService.PostCheck(post);
+            var categoryCheck = postService.PostCategoryCheck(post);
+
+            if (postCheck == null)
+            {
+                TempData["EditError"] = "Validation failed. Please try again.";
+                return View(post); 
+            }
+
+            if (categoryCheck == null)
+            {
+                TempData["EditError"] = "Post Already Has A Category";
+                return View(post);
+            }
+
+            postService.AddCategoryToPost(post.Id, Category);
+
+            return RedirectToAction("Post");
+        }
+
+
+        [HttpGet]
+        public IActionResult AddTags(Guid id)
+        {
+            var post = postService.GetById(id); 
+            if (post == null) return NotFound();
+
+            return View(post);
+        }
+
+ 
+        [HttpPost]
+        public IActionResult AddTags(PostDto post, string Tags)
+        {
+            var postCheck = postService.PostCheck(post);
             if (postCheck == null)
             {
                 TempData["EditError"] = "Validation failed. Please try again.";
@@ -110,7 +145,7 @@ namespace CSharpCollective.Controllers
             }
 
   
-            _postService.AddCategoryToPost(post.Id, Category);
+            postService.AddTagsToPost(post.Id, Tags);
 
             return RedirectToAction("Post");
         }
@@ -119,7 +154,7 @@ namespace CSharpCollective.Controllers
 
         public IActionResult Delete(Guid id)
         {
-            _postService.Delete(id);
+            postService.Delete(id);
 
 
             return RedirectToAction("Post"); // Back to list

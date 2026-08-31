@@ -1,10 +1,10 @@
 ﻿@model CSharpCollective.Services.DtoModels.PostDto
 
 <div class="container mt-4">
-    <h2>Add Category to: @Model.Title</h2>
+    <h2>Add Tags to: @Model.Title</h2>
 
-    <form asp-action="AddCategory" method="post">
-      
+    <form asp-action="AddTags" method="post">
+
         <input type="hidden" asp-for="Id" />
         <input type="hidden" asp-for="Title" />
         <input type="hidden" asp-for="Content" />
@@ -12,11 +12,11 @@
 
         <div class="form-group mb-3">
             <label class="form-label">Enter Name</label>
-            <input type="text" name="Category" class="form-control" placeholder="Enter category name..." required />
+            <input type="text" name="Tags" class="form-control" placeholder="Enter tag name..." required />
         </div>
 
         <div class="form-group">
-            <button type="submit" class="btn btn-success">Add Category</button>
+            <button type="submit" class="btn btn-success">Add Tag</button>
             @TempData["EditError"]
         </div>
     </form>

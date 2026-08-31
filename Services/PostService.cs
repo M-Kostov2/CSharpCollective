@@ -4,22 +4,23 @@ using DataBase.DataContext;
 using DataBase.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Services.Interfaces;
 using System;
 using System.Linq;
 
 
 namespace Services
 {
-    public class PostService
+    public class PostService : IPostService
     {
-        private CollectiveContext _context;
-        private readonly IMapper _mapper;
+        private CollectiveContext context;
+        private readonly IMapper mapper;
 
 
-        public PostService(IMapper mapper)
+        public PostService(IMapper mapper, CollectiveContext context)
         {
-            _context = new CollectiveContext();
-            _mapper = mapper;
+            this.context = context;
+            this.mapper = mapper;
 
         }
 
@@ -32,14 +33,14 @@ namespace Services
             Post postInfo = new Post(Datarecieved.Title, Datarecieved.Content);
 
 
-            _mapper.Map(Datarecieved, postInfo);
+            mapper.Map(Datarecieved, postInfo);
 
-            var postExists = _context.Posts.Any(p => p.Id == postInfo.Id);
+            var postExists = context.Posts.Any(p => p.Id == postInfo.Id);
             if (postExists != null)
             {
-                string authorName = _context.Users.Where(u => u.Id == postInfo.AuthorId).Select(u => u.UserName).FirstOrDefault();
-                _context.Posts.AddAsync(postInfo);
-                _context.SaveChanges();
+                string authorName = context.Users.Where(u => u.Id == postInfo.AuthorId).Select(u => u.UserName).FirstOrDefault();
+                context.Posts.AddAsync(postInfo);
+                context.SaveChanges();
             }
             PostDto postDtoInfo = new PostDto(postInfo.Title, postInfo.Content, postInfo.Id);
 
@@ -61,26 +62,26 @@ namespace Services
 
 
             Post postInfo = new Post();
-            _mapper.Map(Datarecieved, postInfo);
-            postInfo = _context.Posts.Where(p => p.Id == Datarecieved.Id).Single();
+            mapper.Map(Datarecieved, postInfo);
+            postInfo = context.Posts.Where(p => p.Id == Datarecieved.Id).Single();
             Datarecieved.AuthorId = postInfo.AuthorId;
             Datarecieved.UpdatedAt = DateTime.Now;
-            _mapper.Map(Datarecieved, postInfo);
-            _context.SaveChangesAsync();
+            mapper.Map(Datarecieved, postInfo);
+            context.SaveChangesAsync();
 
         }
         public void Delete(Guid Id)
         {
             Post postInfo = new Post();
-            postInfo = _context.Posts.SingleOrDefault(p => p.Id == Id);
+            postInfo = context.Posts.SingleOrDefault(p => p.Id == Id);
 
-            _context.Posts.Remove(postInfo);
-            _context.SaveChanges();
+            context.Posts.Remove(postInfo);
+            context.SaveChanges();
         }
 
         public IEnumerable<PostDto> GetAll()
         {
-            var posts = _context.Posts.Select(n => new Post
+            var posts = context.Posts.Select(n => new Post
             {
                 Id = n.Id,
                 Title = n.Title,
@@ -88,15 +89,15 @@ namespace Services
                 AuthorId = n.AuthorId
             }
                 ).ToList();
-            var postDtos = _mapper.Map<List<Post>, List<PostDto>>(posts);
+            var postDtos = mapper.Map<List<Post>, List<PostDto>>(posts);
             return postDtos;
         }
 
-        public IEnumerable<PostDto> GetAllByCategory(string category)
+        public IEnumerable<PostDto> GetAllByCategory(string tag)
         {
-            var posts = _context.Posts
-            .Include(p => p.Categories)
-            .Where(p => p.Categories.Any(c => c.Name.ToLower() == category.ToLower())).
+            var posts = context.Posts
+            .Include(p => p.Tags)
+            .Where(p => p.Tags.Any(t => t.Name.ToLower() == tag.ToLower())).
             Select(n => new Post
             {
                 Id = n.Id,
@@ -106,19 +107,35 @@ namespace Services
             }
                 )
             .ToList();
-            var postDtos = _mapper.Map<List<Post>, List<PostDto>>(posts);
+            var postDtos = mapper.Map<List<Post>, List<PostDto>>(posts);
             return postDtos;
         }
 
 
-
+        public IEnumerable<PostDto> GetAllByTag(string tag)
+        {
+            var posts = context.Posts
+            .Include(p => p.Tags)
+            .Where(p => p.Tags.Any(t => t.Name.ToLower() == tag.ToLower())).
+            Select(n => new Post
+            {
+                Id = n.Id,
+                Title = n.Title,
+                Content = n.Content,
+                AuthorId = n.AuthorId
+            }
+                )
+            .ToList();
+            var postDtos = mapper.Map<List<Post>, List<PostDto>>(posts);
+            return postDtos;
+        }
 
 
         public PostDto GetById(Guid id)
         {
 
-            Post post = _context.Posts.SingleOrDefault(p => p.Id == id);
-            PostDto postDto = _mapper.Map<Post, PostDto>(post);
+            Post post = context.Posts.SingleOrDefault(p => p.Id == id);
+            PostDto postDto = mapper.Map<Post, PostDto>(post);
 
             return postDto;
 
@@ -129,34 +146,59 @@ namespace Services
         public void AddCategoryToPost(Guid Id, string Category)
         {
 
-            var category = _context.Categories
-           .FirstOrDefault(c => c.Name.ToLower() == Category.ToLower().Trim());
+            var name = Category.Trim();
+
+            var category = context.Categories
+                .FirstOrDefault(c => c.Name.ToLower() == name.ToLower());
 
             if (category == null)
             {
-                category = new Category { Name = Category };
+                category = new Category { Name = name };
+                context.Categories.Add(category);
             }
 
-            var post = _context.Posts
-                .Include(p => p.Categories)
+            var post = context.Posts
+                .Include(p => p.Category)
+                .SingleOrDefault(p => p.Id == Id);
+
+            if (post != null && post.Category == null)
+            {
+                post.Category = category;
+                post.CategoryId = category.Id;
+            }
+
+            context.SaveChangesAsync();
+        }
+
+        public void AddTagsToPost(Guid Id, string Tag)
+        {
+
+            var tag = context.Tags
+           .FirstOrDefault(c => c.Name.ToLower() == Tag.ToLower().Trim());
+
+            if (tag == null)
+            {
+                tag = new Tag { Name = Tag };
+            }
+
+            var post = context.Posts
+                .Include(p => p.Tags)
                 .FirstOrDefault(p => p.Id == Id);
 
             if (post != null)
             {
 
-                if (!post.Categories.Any(c => c.Name.ToLower() == Category.ToLower().Trim()))
+                if (!post.Tags.Any(t => t.Name.ToLower() == Tag.ToLower().Trim()))
                 {
-                    post.Categories.Add(category);
+                    post.Tags.Add(tag);
                 }
 
-                _context.SaveChanges();
+                context.SaveChanges();
 
 
 
             }
         }
-
-
 
         public PostDto PostCheck(PostDto Datarecieved)
         {
@@ -164,13 +206,30 @@ namespace Services
             postDto = Datarecieved;
             string title = Datarecieved.Title;
             string content = Datarecieved.Content;
+            
 
-            if (title.IsNullOrEmpty() & content.IsNullOrEmpty() || title.Length > 100 & content.Length > 2000 & title.Length <= 0)
+            if (title.IsNullOrEmpty() & content.IsNullOrEmpty()|| title.Length > 100 & content.Length > 2000 & title.Length <= 0)
             {
                 return null;
             }
 
             return postDto;
+
+        }
+
+
+        public PostDto PostCategoryCheck(PostDto Datarecieved)
+        {
+            var category = context.Posts.Where(p => p.Id == Datarecieved.Id).Select(p => new { p.Category.Name }).ToString();
+
+        
+
+            if (!category.IsNullOrEmpty())
+            {
+                return null;
+            }
+
+            return Datarecieved;
 
         }
     }

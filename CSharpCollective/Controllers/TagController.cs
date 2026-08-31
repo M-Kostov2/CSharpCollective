@@ -1,32 +1,28 @@
-﻿using AutoMapper;
-using CSharpCollective.Services.DtoModels;
+﻿using CSharpCollective.Services.DtoModels;
 using Microsoft.AspNetCore.Mvc;
-using Services;
 using Services.Interfaces;
 
 namespace CSharpCollective.Controllers
 {
-    public class CategoryController : Controller
+    public class TagController : Controller
     {
-       
         private IPostService postService;
 
-        public CategoryController(IPostService postService)
+        public TagController(IPostService postService)
         {
             this.postService = postService;
         }
         [HttpGet]
-        public IActionResult Category(string category)
+        public IActionResult Tag(string tag)
         {
-            if (string.IsNullOrWhiteSpace(category))
+            if (string.IsNullOrWhiteSpace(tag))
             {
                 return View(new List<PostDto>());
             }
 
-            var posts = postService.GetAllByCategory(category);
+            var posts = postService.GetAllByTag(tag);
 
             return View(posts);
         }
- 
     }
 }

@@ -24,7 +24,7 @@ namespace DataBase.Models
             this.Content = content;
             this.CreatedAt = DateTime.UtcNow;
             this.Tags = new HashSet<Tag>();
-            this.Categories = new HashSet<Category>();
+            
         }
         [Key]
         public Guid Id { get;  set; }
@@ -39,9 +39,11 @@ namespace DataBase.Models
 
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
-
-        public virtual ICollection<Category> Categories { get; set; }
-        public virtual ICollection<Tag> Tags { get; set; }
+        
+        [ForeignKey("Category")]
+        public Guid? CategoryId { get; set; }
+        public virtual Category? Category { get; set; }
+        public virtual ICollection<Tag>? Tags { get; set; }
 
     }
 }

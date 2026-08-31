@@ -1,0 +1,45 @@
+﻿@model IEnumerable<CSharpCollective.Services.DtoModels.PostDto>;
+<link rel="stylesheet" href="~/css/Tag.css" asp-append-version="true" />
+
+
+<div class="main">
+    <partial name="_Sidebar" />
+
+
+    <div class="tags">
+        <h1>Search by Tag</h1>
+        <form method="get" asp-action="Tag" asp-controller="Tag">
+            <input type="text" name="tag" placeholder="Search.." />
+            <button type="submit">Search</button>
+        </form>
+
+
+
+
+        <div class="tags1">
+            @if (Model != null && Model.Any())
+            {
+                @foreach (var post in Model)
+                {
+                    <div class="card mb-3 p-3">
+                        <h4>@post.Title</h4>
+                        <p>@post.Content</p>
+                        <p>Author: @post.AuthorId</p>
+                        
+
+                        @foreach (var tag in post.Tags)
+                        {
+                            <p>@tag.Name</p>
+                        }
+
+                    </div>
+                }
+            }
+            else
+            {
+                <p>No posts found. Enter a tag to start searching.</p>
+            }
+        </div>
+    </div>
+
+</div>

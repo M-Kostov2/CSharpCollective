@@ -25,8 +25,8 @@ namespace CSharpCollective
          
             builder.Services.AddScoped<ILoginService, LoginService>();
             builder.Services.AddScoped<IRegisterService,RegisterService>();
-            builder.Services.AddTransient<CommentService>();
-            builder.Services.AddTransient<PostService>();
+            builder.Services.AddScoped<ICommentService,CommentService>();
+            builder.Services.AddScoped<IPostService,PostService>();
             builder.Services.AddTransient<LogCheck>();
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddDistributedMemoryCache();

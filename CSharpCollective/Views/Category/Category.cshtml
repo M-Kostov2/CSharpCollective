@@ -1,4 +1,6 @@
 ﻿@model IEnumerable<CSharpCollective.Services.DtoModels.PostDto>
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
 
 
 <link rel="stylesheet" href="~/css/Category.css" asp-append-version="true" />
@@ -28,9 +30,9 @@
                         <p>@post.Content</p>
                         <p>Author: @post.AuthorName</p>
 
-                        @foreach (var category in post.Categories)
+                        @if (post.Category != null)
                         {
-                            <p>@category.Name</p>
+                            <p>@post.Category.Name</p>
                         }
 
                     </div>

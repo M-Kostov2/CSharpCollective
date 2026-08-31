@@ -1,0 +1,179 @@
+﻿:root {
+    --amber: #F2A93B;
+    --ink: #171717;
+    --surface: #3a3f47;
+    --surface-hover: #454b54;
+    --input-bg: #2b2f35;
+    --text: #EDEDED;
+    --text-muted: #a7b0b9;
+    --border: rgba(255, 255, 255, 0.14);
+    --mono: 'Cascadia Code', Consolas, 'Courier New', monospace;
+    --sans: 'Segoe UI', Roboto, Arial, sans-serif;
+    --radius-sm: 0.5rem;
+    --radius-md: 0.75rem;
+    --radius-pill: 999px;
+}
+
+.main {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 2rem;
+    min-height: 100vh;
+}
+
+.tags {
+    flex: 1;
+    padding: 1.5rem 2rem 3rem;
+    max-width: 900px;
+    font-family: var(--sans);
+    color: var(--text);
+}
+
+    .tags h1 {
+        font-size: 2rem;
+        font-weight: 800;
+        letter-spacing: -0.01em;
+        margin-bottom: 1.25rem;
+    }
+
+    .tags form {
+        display: flex;
+        gap: 0.5rem;
+        max-width: 420px;
+        margin-bottom: 2rem;
+    }
+
+input[type=text] {
+    flex: 1;
+    padding: 0.65rem 1.1rem;
+    background-color: var(--input-bg);
+    color: var(--text);
+    border: 2px solid var(--border);
+    border-radius: var(--radius-pill);
+    font-size: 16px;
+    font-family: var(--sans);
+    outline: none;
+    transition: border-color 0.15s ease;
+}
+
+    input[type=text]::placeholder {
+        color: var(--text-muted);
+    }
+
+    input[type=text]:focus {
+        border-color: var(--amber);
+    }
+
+button {
+    width: auto;
+    padding: 0.65rem 1.6rem;
+    background-color: transparent;
+    color: var(--amber);
+    border: 2px solid var(--amber);
+    border-radius: var(--radius-pill);
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease, transform 0.1s ease;
+}
+
+    button:hover {
+        width: auto;
+        background-color: var(--amber);
+        color: var(--ink);
+        border-radius: var(--radius-pill);
+    }
+
+    button:active {
+        transform: scale(0.97);
+    }
+
+.tags1 {
+    margin-bottom: 1rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.25rem;
+}
+
+    .tags1 > p {
+        grid-column: 1 / -1;
+        text-align: center;
+        color: var(--text-muted);
+        padding: 3rem 1rem;
+        border: 2px dashed var(--border);
+        border-radius: var(--radius-md);
+    }
+
+    .tags1 .card {
+        margin-bottom: 0;
+        background-color: var(--surface);
+        border: 1px solid var(--border);
+        border-left: 3px solid var(--amber);
+        border-radius: var(--radius-md);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+        transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+        color: var(--text);
+    }
+
+        .tags1 .card:hover {
+            transform: translateY(-3px);
+            background-color: var(--surface-hover);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+        }
+
+        .tags1 .card h4 {
+            font-size: 1.3rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+
+        .tags1 .card p:nth-of-type(1) {
+            color: var(--text-muted);
+            line-height: 1.55;
+            margin-bottom: 0.75rem;
+            font-size: 1rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .tags1 .card p:nth-of-type(2) {
+            font-family: var(--mono);
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 0.75rem;
+        }
+
+        .tags1 .card p:nth-of-type(n+3) {
+            display: inline-block;
+            background-color: transparent;
+            color: var(--amber);
+            border: 1px solid var(--amber);
+            font-family: var(--mono);
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 0.2rem 0.7rem;
+            border-radius: var(--radius-pill);
+            margin: 0 0.4rem 0.4rem 0;
+        }
+
+@media (max-width: 768px) {
+    .main {
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .tags {
+        padding: 1rem;
+        max-width: 100%;
+    }
+
+    .tags1 {
+        grid-template-columns: 1fr;
+    }
+}

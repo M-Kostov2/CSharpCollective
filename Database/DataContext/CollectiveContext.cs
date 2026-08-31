@@ -14,22 +14,22 @@ using System.Threading.Tasks;
 namespace DataBase.DataContext
 {
     public class CollectiveContext : DbContext
-    {   
+    {
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<Comment> Comments { get; set; }
         public virtual DbSet<Category> Categories { get; set; }
         public virtual DbSet<Post> Posts { get; set; }
         public virtual DbSet<Tag> Tags { get; set; }
-        
-        
-       
-       
 
 
-       
-        public CollectiveContext() 
+
+
+
+
+
+        public CollectiveContext()
         {
-           
+
 
         }
         public CollectiveContext(DbContextOptions<CollectiveContext> options) : base(options)
@@ -53,7 +53,7 @@ namespace DataBase.DataContext
                             errorNumbersToAdd: null
                         )
                     );
-                    
+
             }
 
         }
@@ -70,7 +70,7 @@ namespace DataBase.DataContext
 
             //one - to - many,  ---check user to posts/comments
             //one - to - one,   -- check comment to user
-            //many - to - many   -- check posts to tags                                       
+            //many - to - many   -- check posts to tags and posts to categories                                   
 
             modelBuilder.Entity<User>()
               .HasMany(u => u.Posts)
@@ -86,16 +86,12 @@ namespace DataBase.DataContext
                 .HasForeignKey(c => c.AuthorId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-
             modelBuilder.Entity<Category>()
              .HasMany(c => c.Posts)
-             .WithOne()
+             .WithOne(p => p.Category)
+             .HasForeignKey(p => p.CategoryId)
              .OnDelete(DeleteBehavior.NoAction);
 
-            modelBuilder.Entity<Post>()
-            .HasMany(c => c.Categories)
-            .WithOne()
-            .OnDelete(DeleteBehavior.NoAction);
 
 
             modelBuilder.Entity<Post>()

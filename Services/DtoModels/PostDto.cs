@@ -18,7 +18,7 @@ public class PostDto
         this.Title = title;
         this.Content = content;
         this.Tags = new HashSet<Tag>();
-        this.Categories = new HashSet<Category>();
+       ;
     }
     public Guid Id { get; set; }
 
@@ -32,7 +32,7 @@ public class PostDto
     [MaxLength(Constrains.MaxPostContentLength)]
     public string Content { get; set; }
 
-    public virtual ICollection<Category>? Categories { get; set; }
+    public virtual Category? Category { get; set; }
     public virtual ICollection<Tag>? Tags { get; set; }
     public DateTime UpdatedAt { get; set; }
 
