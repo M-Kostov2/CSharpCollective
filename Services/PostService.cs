@@ -142,7 +142,7 @@ namespace Services
 
         }
 
-      
+
         public void AddCategoryToPost(Guid Id, string Category)
         {
 
@@ -206,9 +206,9 @@ namespace Services
             postDto = Datarecieved;
             string title = Datarecieved.Title;
             string content = Datarecieved.Content;
-            
 
-            if (title.IsNullOrEmpty() || content.IsNullOrEmpty()|| title.Length > 100 & content.Length > 2000 & title.Length <= 0)
+
+            if (title.IsNullOrEmpty() || content.IsNullOrEmpty() || title.Length > 100 & content.Length > 2000 & title.Length <= 0)
             {
                 return null;
             }
@@ -220,14 +220,13 @@ namespace Services
 
         public PostDto PostCategoryCheck(PostDto Datarecieved, string Category)
         {
-            var category = context.Posts.Where(p => p.Id == Datarecieved.Id).Include(p => p.Category)
-                .Where(p => p.Category.Name.ToLower() == Category.ToLower())
-                .Select(p=> p.Category.Id)
-                .ToString();
+            var category = context.Posts
+               .Where(p => p.Id == Datarecieved.Id)
+               .Where(p => p.Category.Name.ToLower() == Category.ToLower())
+               .Select(p => p.Category.Id)
+               .FirstOrDefault();
 
-        
-
-            if (!category.IsNullOrEmpty())
+            if (category != Guid.Empty)
             {
                 return null;
             }
